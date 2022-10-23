@@ -19,7 +19,7 @@ async function dataFetcher(url) {
   return await axios.get(url).then(res => res.data)
 }
 
-export default function BasicTable() {
+export default function BasicTable({endpoint, columns, objectProperties}) {
 
   const [page, setPage] = useState(1);
   
@@ -27,9 +27,9 @@ export default function BasicTable() {
     setPage(newPage);
   }
 
-  const { data, error } = useSWR(`http://127.0.0.1:8000/api/employee/?page=${page}`, dataFetcher);
+  const { data, error } = useSWR(`http://127.0.0.1:8000/api/${endpoint}/?page=${page}`, dataFetcher);
 
-  if (error) return <p>Failed to Load</p>
+  if (error) return <p>Failed to Load: {error.message}</p>
   if (!data) {
     return <p>Loading...</p>
   } else {
@@ -39,26 +39,17 @@ export default function BasicTable() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell sx={{fontWeight: 'bold'}}>Employee ID</TableCell>
-                <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
-                <TableCell sx={{fontWeight: 'bold'}}>Department</TableCell>
-                <TableCell sx={{fontWeight: 'bold'}}>Designation</TableCell>
-                <TableCell sx={{fontWeight: 'bold'}}>Branch</TableCell>
+                {columns.map((column) => {
+                  return <TableCell key={column} sx={{fontWeight: 'bold'}}>{column}</TableCell>
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.results.map((row) => (
-                <TableRow
-                  key={row.emp_id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.lk_emp_id}
-                  </TableCell>
-                  <TableCell>{row.emp_name}</TableCell>
-                  <TableCell>{row.dept_id}</TableCell>
-                  <TableCell>{row.desig_id}</TableCell>
-                  <TableCell>{row.loc_id}</TableCell>
+              {data.results.map((row, index) => (
+                <TableRow key={index}>
+                  {objectProperties.map((property, index) => {
+                    return <TableCell key={index}>{row[property]}</TableCell>
+                  })}
                 </TableRow>
               ))}
             </TableBody>
