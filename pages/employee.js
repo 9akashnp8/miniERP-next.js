@@ -9,7 +9,7 @@ export default function Employees() {
             <Head>
                 <title>miniERP | Employees</title>
             </Head>
-            <Typography variant='h4'my={2}>Employees</Typography>
+            <Typography variant='h4'my={1}>Employees</Typography>
             <Table
                 endpoint='employee'
                 columns={['Employee ID', 'Employee Name', 'Department', 'Designation', 'Branch']}

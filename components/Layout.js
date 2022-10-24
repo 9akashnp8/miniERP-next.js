@@ -240,13 +240,13 @@ export default function Layout({children}) {
                   <ListItemIcon>
                     <GroupsIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Dashboard" />
+                  <Link href='/employee'><ListItemText primary="Dashboard" /></Link>
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Add New" />
+                  <Link href='/employee/create'><ListItemText primary="Add New" /></Link>
                 </ListItemButton>
               </List>
             </Collapse>
@@ -263,7 +263,7 @@ export default function Layout({children}) {
                   <ListItemIcon>
                     <AppsIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Dashboard" />
+                  <Link href='/hardware'><ListItemText primary="Dashboard" /></Link>
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>

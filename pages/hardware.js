@@ -9,7 +9,7 @@ export default function Hardware() {
             <Head>
                 <title>miniERP | Hardware</title>
             </Head>
-            <Typography variant='h4'my={2}>Hardware</Typography>
+            <Typography variant='h4'my={1}>Hardware</Typography>
             <Table
                 endpoint='laptop'
                 columns={['Hardware ID', 'Serial No.', 'Status', 'Age', 'Location']}
