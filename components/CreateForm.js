@@ -9,14 +9,23 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import useSWR from 'swr';
 
+import * as React from 'react';
+import { useState } from 'react';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 async function dataFetcher(url) {
-    return await axios.get(url).then(res => res.data)
+    return await axios.get(url).then(res => res.data);
 }
 
 export default function Form() {
@@ -44,7 +53,7 @@ export default function Form() {
             employeeStatus: Yup.string().required('Required'),
             branch: Yup.string().required('Required'),
         }),
-        onSubmit: values => {
+        onSubmit: (values, {resetForm}) => {
             var payload = {
                 dept_id: values.department,
                 desig_id: values.designation,
@@ -58,12 +67,26 @@ export default function Form() {
                 emp_date_exited: values.dateExited ? values.dateExited : null,
             }
             console.log(JSON.stringify(payload));
+            axios.post('http://127.0.0.1:8000/api/employee/', payload)
+            .then((res) => setOpen(true))
+            .catch((error) => {
+                error ? console.log(error.response) : null
+            })
+            resetForm();
         }
     });
 
     const { data: departmentData, error: departmentError} = useSWR('http://127.0.0.1:8000/api/department/', dataFetcher);
     const { data: designationtData, error: designationtError} = useSWR(`http://127.0.0.1:8000/api/designation/${formik.values.department ? `?dept_id=${formik.values.department}` : ''}`, dataFetcher);
     const { data: branchData, error: branchError} = useSWR('http://127.0.0.1:8000/api/location/', dataFetcher);
+    const [open, setOpen] = useState(false);
+    
+    function handleClose(event, reason) {
+        if (reason ===  'clickaway') {
+            return;
+        }
+        setOpen(false);
+    }
 
     return (
         <Box sx={{maxWidth: '80%', margin: 'auto', py: 3}}>
@@ -233,6 +256,11 @@ export default function Form() {
                         </Grid>
                     </Grid>
                 </form>
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                        Employee Added Successfully
+                    </Alert>
+                </Snackbar>
             </Paper>
         </Box>
     )
