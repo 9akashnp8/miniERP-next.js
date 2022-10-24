@@ -12,6 +12,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import useSWR from 'swr';
+
+async function dataFetcher(url) {
+    return await axios.get(url).then(res => res.data)
+}
 
 export default function Form() {
 
@@ -39,9 +45,25 @@ export default function Form() {
             branch: Yup.string().required('Required'),
         }),
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            var payload = {
+                dept_id: values.department,
+                desig_id: values.designation,
+                loc_id: values.branch,
+                lk_emp_id: values.employeeId,
+                emp_name: values.employeeName,
+                emp_email: values.emailId,
+                emp_phone: values.mobileNumber,
+                emp_status: values.employeeStatus,
+                emp_date_joined: values.dateJoined,
+                emp_date_exited: values.dateExited ? values.dateExited : null,
+            }
+            console.log(JSON.stringify(payload));
         }
     });
+
+    const { data: departmentData, error: departmentError} = useSWR('http://127.0.0.1:8000/api/department/', dataFetcher);
+    const { data: designationtData, error: designationtError} = useSWR(`http://127.0.0.1:8000/api/designation/${formik.values.department ? `?dept_id=${formik.values.department}` : ''}`, dataFetcher);
+    const { data: branchData, error: branchError} = useSWR('http://127.0.0.1:8000/api/location/', dataFetcher);
 
     return (
         <Box sx={{maxWidth: '80%', margin: 'auto', py: 3}}>
@@ -65,18 +87,18 @@ export default function Form() {
                             <FormControl sx={{minWidth: 250}} fullWidth>
                                 <InputLabel id="department-label">Department</InputLabel>
                                 <Select
+                                    defaultValue=''
                                     labelId="department-label"
                                     id="department"
                                     label="Department"
                                     value={formik.values.department}
                                     onChange={formik.handleChange('department')}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={formik.handleBlur('department')}
                                     error={formik.touched.department && formik.errors.department}
                                 >
-                                    <MenuItem value={10}>Administration</MenuItem>
-                                    <MenuItem value={20}>Sales</MenuItem>
-                                    <MenuItem value={30}>Human Resources</MenuItem>
-                                    <MenuItem value={40}>IT & Support</MenuItem>
+                                    {departmentData ? departmentData.results.map((department) => {
+                                        return <MenuItem key={department.department_id} value={department.department_id}>{department.dept_name}</MenuItem>
+                                    }) : null}
                                 </Select>
                                 <FormHelperText error>{formik.touched.department && formik.errors.department ? formik.errors.department : null}</FormHelperText>
                             </FormControl>
@@ -85,18 +107,18 @@ export default function Form() {
                             <FormControl sx={{minWidth: 250}} fullWidth>
                                 <InputLabel id="designation-label">Designation</InputLabel>
                                 <Select
+                                    defaultValue=''
                                     labelId="designation-label"
                                     id="designation"
                                     label="Designation"
                                     value={formik.values.designation}
                                     onChange={formik.handleChange('designation')}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={formik.handleBlur('designation')}
                                     error={formik.touched.designation && formik.errors.designation}
                                 >
-                                    <MenuItem value={10}>Assistant Manager</MenuItem>
-                                    <MenuItem value={20}>Manager</MenuItem>
-                                    <MenuItem value={30}>Executive</MenuItem>
-                                    <MenuItem value={40}>Team Lead</MenuItem>
+                                    {designationtData ? designationtData.results.map((designation) => {
+                                        return <MenuItem key={designation.designation_id} value={designation.designation_id}>{designation.designation}</MenuItem>
+                                    }) : null}
                                 </Select>
                                 <FormHelperText error>{formik.touched.designation && formik.errors.designation ? formik.errors.designation : null}</FormHelperText>
                             </FormControl>
@@ -150,11 +172,11 @@ export default function Form() {
                                     label="Employee Status"
                                     value={formik.values.employeeStatus}
                                     onChange={formik.handleChange('employeeStatus')}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={formik.handleBlur('employeeStatus')}
                                     error={formik.touched.employeeStatus && formik.errors.employeeStatus}
                                 >
-                                    <MenuItem value={10}>Active</MenuItem>
-                                    <MenuItem value={20}>In-Active</MenuItem>
+                                    <MenuItem value='Active'>Active</MenuItem>
+                                    <MenuItem value='InActive'>InActive</MenuItem>
                                 </Select>
                                 <FormHelperText error>{formik.touched.employeeStatus && formik.errors.employeeStatus ? formik.errors.employeeStatus : null}</FormHelperText>
                             </FormControl>
@@ -168,12 +190,12 @@ export default function Form() {
                                     label="Branch"
                                     value={formik.values.branch}
                                     onChange={formik.handleChange('branch')}
-                                    onBlur={formik.handleBlur}
+                                    onBlur={formik.handleBlur('branch')}
                                     error={formik.touched.branch && formik.errors.branch}
                                 >
-                                    <MenuItem value={10}>Ernakulam</MenuItem>
-                                    <MenuItem value={20}>Calicut</MenuItem>
-                                    <MenuItem value={30}>Kottayam</MenuItem>
+                                    {branchData ? branchData.results.map((branch) => {
+                                        return <MenuItem key={branch.location_id} value={branch.location_id}>{branch.location}</MenuItem>
+                                    }) : null}
                                 </Select>
                                 <FormHelperText error>{formik.touched.branch && formik.errors.branch ? formik.errors.branch : null}</FormHelperText>
                             </FormControl>
