@@ -23,8 +23,17 @@ import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import GroupsIcon from '@mui/icons-material/Groups';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DevicesIcon from '@mui/icons-material/Devices';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import AddToQueueIcon from '@mui/icons-material/AddToQueue';
+import AppsIcon from '@mui/icons-material/Apps';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -168,6 +177,22 @@ function ResponsiveAppBar() {
 }
 
 export default function Layout({children}) {
+  const [employeeOpen, setEmployeeOpen] = React.useState(true);
+  const [hardwareOpen, setHardwareOpen] = React.useState(true);
+  const [financeOpen, setFinanceOpen] = React.useState(true);
+
+  const handleEmployeeClick = () => {
+    setEmployeeOpen(!employeeOpen);
+  }
+
+  const handleHardwareClick = () => {
+    setHardwareOpen(!hardwareOpen);
+  }
+
+  const handleFinanceClick = () => {
+    setFinanceOpen(!financeOpen);
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -202,30 +227,75 @@ export default function Layout({children}) {
           </List>
           <Divider />
           <List>
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <GroupsIcon/>
-                    </ListItemIcon>
-                    <Link href='/employees'><ListItemText primary='Employee'/></Link>
+            <ListItemButton onClick={handleEmployeeClick}>
+              <ListItemIcon>
+                <CorporateFareIcon />
+              </ListItemIcon>
+              <ListItemText primary="Employees" />
+              {employeeOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={employeeOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <GroupsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
                 </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <DevicesIcon/>
-                    </ListItemIcon>
-                    <Link href='/hardware'><ListItemText primary='Hardware'/></Link>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <PersonAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Add New" />
                 </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <AccountBalanceIcon/>
-                    </ListItemIcon>
-                    <Link href='/finance'><ListItemText primary='Finance'/></Link>
+              </List>
+            </Collapse>
+            <ListItemButton onClick={handleHardwareClick}>
+              <ListItemIcon>
+                <DevicesIcon />
+              </ListItemIcon>
+              <ListItemText primary="Hardware" />
+              {hardwareOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={hardwareOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <AppsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
                 </ListItemButton>
-            </ListItem>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <AddToQueueIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Add New" />
+                </ListItemButton>
+              </List>
+            </Collapse>
+            <ListItemButton onClick={handleFinanceClick}>
+              <ListItemIcon>
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary="Finance" />
+              {financeOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={financeOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <LibraryBooksIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Services" />
+                </ListItemButton>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <AccountBalanceWalletIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Add Payment" />
+                </ListItemButton>
+              </List>
+            </Collapse>
           </List>
         </Box>
       </Drawer>
