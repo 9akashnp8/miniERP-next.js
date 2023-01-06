@@ -35,6 +35,25 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
+import { useEffect } from 'react';
+import Router from 'next/router';
+
+function Logout({children}) {
+
+  function handleClick(event) {
+    Router.push('/login')
+  }
+  
+  return (
+    <Typography 
+      textAlign="center"
+      component={'span'}
+      onClick={handleClick}
+    >
+      {children}
+    </Typography>
+  )
+}
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const drawerWidth = 240;
@@ -165,7 +184,9 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center">
+                    {setting == 'Logout' ? <Logout>{setting}</Logout> : setting }
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
