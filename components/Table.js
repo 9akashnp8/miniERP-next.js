@@ -11,7 +11,6 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
 import { useState } from 'react';
-
 import axios from 'axios';
 import useSWR from 'swr';
 

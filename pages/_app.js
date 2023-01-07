@@ -1,8 +1,7 @@
 import Layout from '../components/Layout';
 
-
 function MyApp({ Component, pageProps }) {
-  
+
   const getLayout = Component.getLayout || ((page) => {
   return (
     <Layout>

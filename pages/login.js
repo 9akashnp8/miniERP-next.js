@@ -34,21 +34,7 @@ const theme = createTheme();
 
 export default function Login() {
 
-    const initialFormData = Object.freeze({
-        username: '',
-        password: ''
-    });
-
-    const [formData, setFormData] = useState(initialFormData);
-
-    function handleChange(event) {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value.trim(),
-        });
-    }
-
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
     };
 
@@ -80,7 +66,6 @@ export default function Login() {
                         name="username"
                         autoComplete="username"
                         autoFocus
-                        onChange={handleChange}
                     />
                     <TextField
                         margin="normal"
@@ -91,7 +76,6 @@ export default function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        onChange={handleChange}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
