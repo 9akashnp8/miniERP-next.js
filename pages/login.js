@@ -15,7 +15,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import Router from 'next/router';
-// 3rd party functional libs
+// 3rd party functional/tools libs
+import { useSelector, useDispatch } from 'react-redux';
+
+import { login } from '../lib/actions/auth';
 
 function Copyright(props) {
     return (
@@ -33,9 +36,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
+    const loading = useSelector(state => state.auth.loading);
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    const dispatch = useDispatch();
+
+    const [ formData, setFormData ] = useState({
+        username: '',
+        password: ''
+    });
+
+    const { username, password } = formData;
+
+    const handleChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     async function handleSubmit(event) {
         event.preventDefault();
+        
+        if (dispatch && dispatch !== null && dispatch !== undefined ) {
+            dispatch(login(username, password))
+        }
+    };
+
+    if (typeof window !== 'undefined' && isAuthenticated) {
+        Router.push("/");
     };
 
     return (
@@ -66,6 +89,7 @@ export default function Login() {
                         name="username"
                         autoComplete="username"
                         autoFocus
+                        onChange={handleChange}
                     />
                     <TextField
                         margin="normal"
@@ -76,6 +100,7 @@ export default function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={handleChange}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
