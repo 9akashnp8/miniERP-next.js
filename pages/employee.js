@@ -2,8 +2,19 @@ import Table from '../components/Table';
 import { Typography } from '@mui/material';
 
 import Head from 'next/head';
+import Router from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { listEmployees } from '../lib/actions/auth';
 
 export default function Employees() {
+    const { isAuthenticated } = useSelector(state => state.auth.isAuthenticated)
+
+    // if (typeof window !== 'undefined' && !isAuthenticated) {
+    //     console.log(isAuthenticated)
+    //     Router.push('/login')
+    // }
+
     return (
         <div>
             <Head>
