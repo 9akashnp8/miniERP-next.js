@@ -25,10 +25,9 @@ export default function BasicTable({endpoint, columns, objectProperties}) {
   function handleChangePage(event, newPage) {
     setPage(newPage);
   }
+  const { data, error } = useSWR(`/api/${endpoint}/list`, dataFetcher);
 
-  const { data, error } = useSWR(`http://127.0.0.1:8000/api/${endpoint}/?page=${page}`, dataFetcher);
-
-  if (error) return <p>Failed to Load: {error.message}</p>
+  if (error) { return `Something went wrong: ${error}`}
   if (!data) {
     return <p>Loading...</p>
   } else {
@@ -44,7 +43,7 @@ export default function BasicTable({endpoint, columns, objectProperties}) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.results.map((row, index) => (
+              {data.employees.results.map((row, index) => (
                 <TableRow key={index}>
                   {objectProperties.map((property, index) => {
                     return <TableCell key={index}>{row[property]}</TableCell>
@@ -62,7 +61,7 @@ export default function BasicTable({endpoint, columns, objectProperties}) {
         >
           <Pagination
             page={page}
-            count={Math.round(data.count / 10)} 
+            count={Math.round(data.employees.count / 10)} 
             showFirstButton 
             showLastButton
             onChange={handleChangePage}

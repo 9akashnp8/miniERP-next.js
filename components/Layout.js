@@ -35,13 +35,18 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
-import { useEffect } from 'react';
 import Router from 'next/router';
+import { useDispatch } from 'react-redux';
+import { logout } from '../lib/actions/auth';
 
 function Logout({children}) {
+  const dispatch = useDispatch();
 
   function handleClick(event) {
-    Router.push('/login')
+    if (dispatch && dispatch !== null && dispatch !== undefined ) {
+      dispatch(logout());
+      Router.push('/login');
+    }
   }
   
   return (
@@ -59,6 +64,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const drawerWidth = 240;
 
 function ResponsiveAppBar() {
+  
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
