@@ -36,8 +36,9 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 import Router from 'next/router';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { logout } from '../lib/actions/auth';
+import { logout, checkAuthStatus } from '../lib/actions/auth';
 
 function Logout({children}) {
   const dispatch = useDispatch();
@@ -204,6 +205,7 @@ function ResponsiveAppBar() {
 }
 
 export default function Layout({children}) {
+  const dispatch = useDispatch();
   const [employeeOpen, setEmployeeOpen] = React.useState(true);
   const [hardwareOpen, setHardwareOpen] = React.useState(true);
   const [financeOpen, setFinanceOpen] = React.useState(true);
@@ -219,6 +221,10 @@ export default function Layout({children}) {
   const handleFinanceClick = () => {
     setFinanceOpen(!financeOpen);
   }
+
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+  }, [dispatch])
 
   return (
     <Box sx={{ display: 'flex' }}>
