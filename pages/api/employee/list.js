@@ -1,15 +1,41 @@
-import cookie from 'cookie';
+// Internal Imports
 import { API_URL } from '../../../lib/config';
+import { refreshAccessToken } from '../../../lib/utils';
 
+// 3rd party tools and libraries
+import cookie from 'cookie';
+
+// API
 export default async(req, res) => {
     if (req.method === 'GET') {
         const cookies = cookie.parse(req.headers.cookie ?? '');
         const access = cookies.access ?? false;
+        const refresh = cookies.refresh ?? false;
 
-        if (access == false) { 
-            return res.status(401).json({
-                error: 'Unauthorized!'
-            });
+        if (access == false) {
+            console.log('access token gone')
+            const newTokens = refreshAccessToken(refresh);
+
+            res.setHeader('Set-Cookie', [
+                cookie.serialize(
+                    'access', newTokens.access, {
+                        httpOnly: true,
+                        secure: false, // move this to .env
+                        maxAge: 60,
+                        sameSite: 'strict',
+                        path: '/api/'
+                    }
+                ),
+                cookie.serialize(
+                    'refresh', newTokens.refresh, {
+                        httpOnly: true,
+                        secure: false, // move this to .env
+                        maxAge: 60 * 60 * 24,
+                        sameSite: 'strict',
+                        path: '/api/'
+                    }
+                )
+            ]);
         }
 
         try {
@@ -17,7 +43,7 @@ export default async(req, res) => {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${access}`
+                    'Authorization': `Bearer ${cookies.access}`
                 }
             });
 
@@ -37,7 +63,6 @@ export default async(req, res) => {
                 error: `Something went wrong: ${error}`
             })
         }
-
     } else {
         res.setHeader('Allow', ['GET']);
         return res.status(405).json({

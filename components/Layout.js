@@ -38,7 +38,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import Router from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { logout, refreshToken } from '../lib/actions/auth';
+import { logout, checkAuthStatus } from '../lib/actions/auth';
 
 function Logout({children}) {
   const dispatch = useDispatch();
@@ -223,7 +223,7 @@ export default function Layout({children}) {
   }
 
   useEffect(() => {
-    dispatch(refreshToken());
+    dispatch(checkAuthStatus());
   }, [dispatch])
 
   return (

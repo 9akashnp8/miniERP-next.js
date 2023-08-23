@@ -4,7 +4,7 @@ export default async (req, res) => {
     if (req.method == "POST") { // change erquality check to strict
         res.setHeader('Set-Cookie', [
             cookie.serialize(
-                'access', '', {
+                'access', 'Logout', {
                     httpOnly: true,
                     secure: false, // move this to .env
                     expires: new Date(0),
@@ -13,7 +13,7 @@ export default async (req, res) => {
                 }
             ),
             cookie.serialize(
-                'refresh', '', {
+                'refresh', 'Logout', {
                     httpOnly: true,
                     secure: false, // move this to .env
                     expires: new Date(0),
